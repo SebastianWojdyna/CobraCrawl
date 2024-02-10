@@ -216,6 +216,28 @@ namespace CobraCrawl
             image.RenderTransform = new RotateTransform(rotation);
         }
 
+        // Method which draw the snake when user failed and the snake is dead
+        private async Task DrawDeadSnake()
+        {
+            // Create a list containg all the snake positions
+            List<Position> positions = new List<Position>(gameState.SnakePositions());
+            // Make iterations through these positions
+            for (int i = 0; i < positions.Count; i++)
+            {
+                // Grep the position with index i 
+                Position pos = positions[i];
+                // Decide the image source from that position
+                // If i == 0 I need the image called DeadHead otherwise
+                // Otherwise, I need the DeadBody image
+                ImageSource source = (i == 0) ? Images.DeadHead : Images.DeadBody;
+                // Set the source of the images in current positions
+                gridImages[pos.Row, pos.Col].Source = source;
+                // And add the small delay
+                await Task.Delay(50);
+
+            }
+        }
+
         // Simple cound down 
         private async Task ShowCountDown()
         {
@@ -230,7 +252,7 @@ namespace CobraCrawl
         // Game over overlay
         private async Task ShowGameOver()
         {
-
+            await DrawDeadSnake();
             // It starts with 1s delay
             await Task.Delay(1000);
             // And then make the overlay visible again
