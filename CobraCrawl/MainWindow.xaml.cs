@@ -47,14 +47,53 @@ namespace CobraCrawl
             gameState = new GameState(rows, cols);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Draw();
+            await GameLoop();
         }
 
+        // Method which is called when User presses a Key
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            // If the game is over
+            if (gameState.GameOver)
+            {
+                // Then pressing a Key should not do anything
+                return;
+            }
 
+            // Otherwise I check which Key is pressed
+            switch (e.Key)
+            {
+                case Key.Left:
+                    gameState.ChangeDirection(Direction.Left);
+                    break;
+                case Key.Right:
+                    gameState.ChangeDirection(Direction.Right);
+                    break;
+                case Key.Up:
+                    gameState.ChangeDirection(Direction.Up);
+                    break;
+                case Key.Down:
+                    gameState.ChangeDirection(Direction.Down);
+                    break;
+            }
+        }
+
+        // Method to move in regular intervals so need to be Async
+        private async Task GameLoop()
+        {
+            // The loop will run untill the game is over
+            while (!gameState.GameOver)
+            {
+                // Small delay - 100 ms to make the game slower
+                await Task.Delay(100);
+                // After delay I call move method
+                gameState.Move();
+                // And then draw the new game state
+                Draw();
+            }
         }
 
         private Image[,] SetupGrid()
