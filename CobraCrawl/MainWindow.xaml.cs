@@ -159,7 +159,7 @@ namespace CobraCrawl
             DrawGrid();
             // Set the ScoreText to SCORE followed by actual score stored in the gameState
             // So the score will be update when the snake eats
-            ScoreText.Text = $"SCORE {gameState.Score}";
+            ScoreText.Text = $"WYNIK {gameState.Score}";
         }
 
         // Method which will look at the grid array in GameState and update the grid images
