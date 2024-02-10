@@ -52,6 +52,7 @@ namespace CobraCrawl
         private async Task RunGame()
         {
             Draw();
+            await ShowCountDown();
             // Hide the overlay
             Overlay.Visibility = Visibility.Hidden;
             await GameLoop();
@@ -175,6 +176,17 @@ namespace CobraCrawl
                     // Set the source for correspondent image using Dictionary
                     gridImages[r, c].Source = gridValToImage[gridVal];
                 }
+            }
+        }
+
+        // Simple cound down
+        private async Task ShowCountDown()
+        {
+            // Count from 3 down to 1
+            for (int i = 3; i >= 1; i--)
+            {
+                OverlayText.Text = i.ToString();
+                await Task.Delay(500);
             }
         }
     }
