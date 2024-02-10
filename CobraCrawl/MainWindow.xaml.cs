@@ -56,6 +56,9 @@ namespace CobraCrawl
             // Hide the overlay
             Overlay.Visibility = Visibility.Hidden;
             await GameLoop();
+            await ShowGameOver();
+            // Create fresh game state for the next game
+            gameState = new GameState(rows, cols);
         }
 
         // When the user presses a key then the Window_PreviewKeyDown is called
@@ -179,7 +182,7 @@ namespace CobraCrawl
             }
         }
 
-        // Simple cound down
+        // Simple cound down 
         private async Task ShowCountDown()
         {
             // Count from 3 down to 1
@@ -188,6 +191,17 @@ namespace CobraCrawl
                 OverlayText.Text = i.ToString();
                 await Task.Delay(500);
             }
+        }
+
+        // Game over overlay
+        private async Task ShowGameOver()
+        {
+
+            // It starts with 1s delay
+            await Task.Delay(1000);
+            // And then make the overlay visible again
+            Overlay.Visibility = Visibility.Visible;
+            OverlayText.Text = "WCIŚNIJ DOWOLNY PRZYCISK BY ZACZĄĆ";
         }
     }
 }
