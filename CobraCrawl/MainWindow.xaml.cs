@@ -20,15 +20,41 @@ namespace CobraCrawl
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Dictionary which connect grid values to image sources
+        private readonly Dictionary<GridValue, ImageSource> gridValToImage = new()
+        {
+            // If a grid position is empty then will be displayed an empty image asset
+            { GridValue.Empty, Images.Empty },
+            // If a position contains part of the snake then will be shown the body image
+            { GridValue.Snake, Images.Body },
+            // The same with food
+            { GridValue.Food, Images.Food }
+        };
+        
+        
         // Variables for number of rows and columns
         private readonly int rows = 15, cols = 15;
         // Image array for access the image for giver position in the grid
         private readonly Image[,] gridImages;
+        // Game state object
+        private GameState gameState;
 
         public MainWindow()
         {
             InitializeComponent();
             gridImages = SetupGrid();
+            // Initializing Game State object
+            gameState = new GameState(rows, cols);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Draw();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+
         }
 
         private Image[,] SetupGrid()
@@ -60,6 +86,28 @@ namespace CobraCrawl
 
             // Outside the loop image array is returned
             return images;
+        }
+
+        // More general Draw method, where will be called DrawGrid()
+        private void Draw()
+        {
+            DrawGrid();
+        }
+
+        // Method which will look at the grid array in GameState and update the grid images
+        private void DrawGrid()
+        {
+            // It looks through every grid position
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    // Inside the loop I get grid value in current position
+                    GridValue gridVal = gameState.Grid[r, c];
+                    // Set the source for correspondent image using Dictionary
+                    gridImages[r, c].Source = gridValToImage[gridVal];
+                }
+            }
         }
     }
 }
