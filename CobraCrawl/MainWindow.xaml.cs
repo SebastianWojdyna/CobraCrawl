@@ -30,8 +30,21 @@ namespace CobraCrawl
             // The same with food
             { GridValue.Food, Images.Food }
         };
-        
-        
+
+        // Dictionary which maps directions to head rotations
+        private readonly Dictionary<Direction, int> dirToRotation = new()
+        {
+            // For the up direction there is no rotation
+            { Direction.Up, 0 },
+            // For the right direction there is 90 degrees rotation
+            { Direction.Right, 90 },
+            // For down there is 180 degrees rotation
+            { Direction.Down, 180 },
+            // For left there is 270 degrees rotation
+            { Direction.Left, 270 },
+        };
+
+
         // Variables for number of rows and columns
         private readonly int rows = 15, cols = 15;
         // Image array for access the image for giver position in the grid
@@ -143,7 +156,9 @@ namespace CobraCrawl
                     Image image = new Image()
                     {
                         // Initially source is a empty image asset
-                        Source = Images.Empty
+                        Source = Images.Empty,
+                        // For images to rotate around center point
+                        RenderTransformOrigin = new Point(0.5, 0.5)
                     };
 
                     // Store this images in 2d array
@@ -161,6 +176,7 @@ namespace CobraCrawl
         private void Draw()
         {
             DrawGrid();
+            DrawSnakeHead();
             // Set the ScoreText to SCORE followed by actual score stored in the gameState
             // So the score will be update when the snake eats
             ScoreText.Text = $"WYNIK {gameState.Score}";
@@ -178,8 +194,26 @@ namespace CobraCrawl
                     GridValue gridVal = gameState.Grid[r, c];
                     // Set the source for correspondent image using Dictionary
                     gridImages[r, c].Source = gridValToImage[gridVal];
+                    // This ensures that the only rotating image is the one, which is snake's head
+                    gridImages[r, c].RenderTransform = Transform.Identity;
                 }
             }
+        }
+
+        // Method which draw head of snake and use current snake direction for the correct head roration
+        private void DrawSnakeHead()
+        {
+            // First I get the position of the snake's head
+            Position headPos = gameState.HeadPosition();
+            // And get a grid image for that position
+            Image image = gridImages[headPos.Row, headPos.Col];
+            // Next set the source to the head image
+            image.Source = Images.Head;
+            // Apply the rotation to the image
+            // First get number of degrees from dictionary
+            int rotation = dirToRotation[gameState.Dir];
+            // Then, rotate the image by that amount
+            image.RenderTransform = new RotateTransform(rotation);
         }
 
         // Simple cound down 
