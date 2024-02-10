@@ -54,7 +54,7 @@
                     RenderOptions.EdgeMode="Aliased">
                 <TextBlock x:Name="OverlayText"
                            Text="WCIŚNIJ DOWOLNY PRZYCISK BY ZACZĄĆ"
-                           FontSize="26"
+                           FontSize="20"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            TextWrapping="Wrap">
