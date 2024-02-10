@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
@@ -15,6 +16,9 @@ namespace CobraCrawl
         public Direction Dir { get; private set; } // Define for snake where to move next
         public int Score { get; private set; } // Score property
         public bool GameOver { get; private set; } // Game over boolean 
+
+        // Variable for the buffor for next moves
+        private readonly LinkedList<Direction> dirChanges = new LinkedList<Direction>();
 
         // Linked list is used because it allow to add and delete both from beginning and end of the list
         // First element is the head of the snake and the last element is the tail 
@@ -129,10 +133,48 @@ namespace CobraCrawl
 
         // -----=== Methods for modifying the game state ===-----
 
+        // Helper method for the ChangeDirection() method
+        private Direction GetLastDirection() 
+        {
+            // Determine last snake predetermined direction
+            // If the buffor ie empty it returns the current direction
+            if (dirChanges.Count == 0)
+            {
+                return Dir;
+            }
+
+            // Otherwise, it returns the last or more recently added direction change
+            return dirChanges.Last.Value;
+
+        }
+
+        // Helper method for the ChageDirection() method
+        private bool CanChangeDirection(Direction newDir)
+        {
+            // If returns "true" then the given direction can be added to the buffor, otherwise it returns false
+            // If there are already 2 direction changes stored in the buffor
+            if (dirChanges.Count == 2)
+            {
+                // Then I consider the buffor to be full and return "false"
+                return false;
+            }
+
+            // If there is space in the buffor, I get the last predetermined direction
+            Direction lastDir = GetLastDirection();
+            // And return "true" if the new direction is not the same as the last direction and they are not opposites
+            return newDir != lastDir && newDir != lastDir.Opposite();
+
+        }
+
         // Method for change the direction
         public void ChangeDirection(Direction dir) 
         {
-            Dir = dir;
+            // I want to change the direction immediately so
+            // If I can change direction then I add it to the buffor
+            if (CanChangeDirection(dir))
+            {
+                dirChanges.AddLast(dir);
+            }
         }
 
         // Method which checks if given possition is outside the grid or not
@@ -163,6 +205,15 @@ namespace CobraCrawl
         // Method to move the snake 1 step in the current direction
         public void Move()
         {
+            // Check if there is direction change in the buffor
+            if (dirChanges.Count > 0)
+            {
+                // If so, I change snake direction accordingly
+                Dir = dirChanges.First.Value;
+                // And then remove that direction change from the buffor
+                dirChanges.RemoveFirst();
+            }
+
             // Getting new head position
             Position newHeadPos = HeadPosition().Translate(Dir);
             // Check what the head will hit
