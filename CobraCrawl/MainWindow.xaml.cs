@@ -46,7 +46,7 @@ namespace CobraCrawl
 
 
         // Variables for number of rows and columns
-        private readonly int rows = 15, cols = 15;
+        private readonly int rows = 20, cols = 20;
         // Image array for access the image for giver position in the grid
         private readonly Image[,] gridImages;
         // Game state object
@@ -146,6 +146,7 @@ namespace CobraCrawl
             // Next set the number of cols and rows in the game grid
             GameGrid.Rows = rows;
             GameGrid.Columns = cols;
+            GameGrid.Width = GameGrid.Height * (cols / (double)rows);
 
             // Loop over all grid positions
             for (int r = 0; r < rows; r++)
