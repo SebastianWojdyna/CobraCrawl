@@ -38,6 +38,8 @@ namespace CobraCrawl
         private readonly Image[,] gridImages;
         // Game state object
         private GameState gameState;
+        // Game running object which is false by default
+        private bool gameRunning;
 
         public MainWindow()
         {
@@ -47,10 +49,34 @@ namespace CobraCrawl
             gameState = new GameState(rows, cols);
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private async Task RunGame()
         {
             Draw();
+            // Hide the overlay
+            Overlay.Visibility = Visibility.Hidden;
             await GameLoop();
+        }
+
+        // When the user presses a key then the Window_PreviewKeyDown is called
+        // And after that Window_KeyDown is also called
+        private async void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // If the overlay is visible
+            if (Overlay.Visibility == Visibility.Visible)
+            {
+                // Then set this event handle property to "true"
+                // This will prevent Window_KeyDown from being called
+                e.Handled = true;
+            }
+
+            // If the game is not already running
+            if (!gameRunning)
+            {
+                gameRunning = true;
+                await RunGame();
+                // When that method is complete then I set gameRunning back to false
+                gameRunning = false;
+            }
         }
 
         // Method which is called when User presses a Key
