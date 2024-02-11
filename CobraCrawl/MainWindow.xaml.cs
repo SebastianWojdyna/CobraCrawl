@@ -54,6 +54,9 @@ namespace CobraCrawl
         private GameState gameState;
         // Game running object which is false by default
         private bool gameRunning;
+        // Variable which check if the game is paused
+        private bool isPaused = false;
+
 
         public MainWindow()
         {
@@ -75,25 +78,26 @@ namespace CobraCrawl
             gameState = new GameState(rows, cols);
         }
 
+        // Method for change pause state
+        private void TogglePauseGame()
+        {
+            isPaused = !isPaused; // Change value on opposite
+            Overlay.Visibility = isPaused ? Visibility.Visible : Visibility.Collapsed;
+            OverlayText.Text = isPaused ? "Gra zapauzowana. Naciśnij dowolny klawisz, aby wznowić." : "Wciśnij dowolny klawisz, aby rozpocząć.";
+        }
+
+
         // When the user presses a key then the Window_PreviewKeyDown is called
         // And after that Window_KeyDown is also called
         private async void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             // If the overlay is visible
-            if (Overlay.Visibility == Visibility.Visible)
-            {
-                // Then set this event handle property to "true"
-                // This will prevent Window_KeyDown from being called
-                e.Handled = true;
-            }
-
-            // If the game is not already running
-            if (!gameRunning)
+            if (Overlay.Visibility == Visibility.Visible && !gameRunning)
             {
                 gameRunning = true;
                 await RunGame();
-                // When that method is complete then I set gameRunning back to false
                 gameRunning = false;
+                e.Handled = true;
             }
         }
 
@@ -106,22 +110,32 @@ namespace CobraCrawl
                 // Then pressing a Key should not do anything
                 return;
             }
-
-            // Otherwise I check which Key is pressed
-            switch (e.Key)
+            else if (e.Key == Key.P && !isPaused)
             {
-                case Key.Left:
-                    gameState.ChangeDirection(Direction.Left);
-                    break;
-                case Key.Right:
-                    gameState.ChangeDirection(Direction.Right);
-                    break;
-                case Key.Up:
-                    gameState.ChangeDirection(Direction.Up);
-                    break;
-                case Key.Down:
-                    gameState.ChangeDirection(Direction.Down);
-                    break;
+                TogglePauseGame();
+            }
+            else if (isPaused)
+            {
+                TogglePauseGame();
+            }
+            else
+            {
+                // Otherwise I check which Key is pressed
+                switch (e.Key)
+                {
+                    case Key.Left:
+                        gameState.ChangeDirection(Direction.Left);
+                        break;
+                    case Key.Right:
+                        gameState.ChangeDirection(Direction.Right);
+                        break;
+                    case Key.Up:
+                        gameState.ChangeDirection(Direction.Up);
+                        break;
+                    case Key.Down:
+                        gameState.ChangeDirection(Direction.Down);
+                        break;
+                }
             }
         }
 
@@ -131,12 +145,18 @@ namespace CobraCrawl
             // The loop will run untill the game is over
             while (!gameState.GameOver)
             {
-                // Small delay - 100 ms to make the game slower
-                await Task.Delay(100);
+                if (isPaused)
+                {
+                    await Task.Delay(100);
+                    continue;
+                }
+
                 // After delay I call move method
                 gameState.Move();
                 // And then draw the new game state
                 Draw();
+                // Small delay - 100 ms to make the game slower
+                await Task.Delay(100);
             }
         }
 
