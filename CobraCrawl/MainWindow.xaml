@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CobraCrawl"
         mc:Ignorable="d"
-        Title="Snake" Height="500" Width="800"
+        Title="CobraCrawl" Height="500" Width="800"
         MinWidth="300" MinHeight="300"
         Background="{StaticResource BackgroundColor}"
         Foreground="{StaticResource TextColor}"
