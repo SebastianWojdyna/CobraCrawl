@@ -322,7 +322,7 @@ namespace CobraCrawl
         }
 
         // Method which takes bet scores from database and show them to user
-        // The mrthod is called when the user paste his name 
+        // The method is called when the user paste his name 
         private void ShowHighScores()
         {
             using (var db = new SnakeGameContext())
