@@ -1,0 +1,32 @@
+﻿<Window x:Class="CobraCrawl.PlayerNameDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CobraCrawl" Height="200" Width="400"
+        Background="{StaticResource BackgroundColor}">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Wprowadź imię, by zapisać wynik:" 
+                   Margin="0,0,0,20" 
+                   VerticalAlignment="Top"
+                   Foreground="{StaticResource TextColor}" 
+                   FontSize="16"
+                   TextWrapping="Wrap" />
+
+        <TextBox x:Name="PlayerNameTextBox" 
+                 Grid.Row="1" 
+                 Margin="0,10,0,20" 
+                 VerticalAlignment="Top" />
+
+        <Button Content="Zapisz" 
+                Grid.Row="2" 
+                HorizontalAlignment="Right" 
+                Margin="0,20,0,0" 
+                Padding="10,5" 
+                Click="SaveButton_Click"/>
+    </Grid>
+</Window>

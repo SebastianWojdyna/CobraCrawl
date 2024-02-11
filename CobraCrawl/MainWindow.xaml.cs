@@ -309,11 +309,15 @@ namespace CobraCrawl
             OverlayText.Text = "WCIŚNIJ DOWOLNY PRZYCISK BY ZACZĄĆ";
 
             // Logic for getting user neame
-            string playerName = Microsoft.VisualBasic.Interaction.InputBox("Podaj swoje imię:", "Koniec gry", "Gracz", 100, 100);
-            if (!string.IsNullOrEmpty(playerName))
+            var playerNameDialog = new PlayerNameDialog();
+            if (playerNameDialog.ShowDialog() == true)
             {
-                SaveHighScore(playerName, gameState.Score);
-                ShowHighScores();
+                string playerName = playerNameDialog.PlayerName;
+                if (!string.IsNullOrEmpty(playerName))
+                {
+                    SaveHighScore(playerName, gameState.Score); // Save score with user's name
+                    ShowHighScores(); // Show best scores
+                }
             }
 
             // Reset the game state to be able start form the beggining
