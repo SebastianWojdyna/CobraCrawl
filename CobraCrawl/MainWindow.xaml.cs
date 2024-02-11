@@ -332,11 +332,14 @@ namespace CobraCrawl
                     .Take(10) // SHow best 10 scores
                     .ToList();
 
+
                 var highScoresText = new StringBuilder();
                 highScores.ForEach(hs =>
                     highScoresText.AppendLine($"{hs.PlayerName} - {hs.Score}"));
 
-                MessageBox.Show(highScoresText.ToString(), "Najlepsze wyniki");
+                var dialog = new CustomDialog(highScoresText.ToString());
+                dialog.Title = "Najlepsze wyniki";
+                dialog.ShowDialog();
             }
         }
     }
