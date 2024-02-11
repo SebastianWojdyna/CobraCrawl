@@ -306,12 +306,12 @@ namespace CobraCrawl
                 }
                 catch (DbUpdateException dbEx)
                 {
-                    // Wyjątek związany z aktualizacją bazy danych
+                    // Exception related to db update
                     ExceptionHandler(dbEx);
                 }
                 catch (Exception ex)
                 {
-                    // Inne wyjątki
+                    // Other exceptions
                     MessageBox.Show($"Wystąpił błąd: {ex.Message}");
                 }
 
@@ -353,7 +353,7 @@ namespace CobraCrawl
             {
                 var highScores = db.HighScores
                     .OrderByDescending(h => h.Score)
-                    .Take(10) // SHow best 10 scores
+                    .Take(15) // Show best 15 scores
                     .ToList();
 
 
