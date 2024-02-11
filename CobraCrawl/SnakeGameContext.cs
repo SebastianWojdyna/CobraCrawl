@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace CobraCrawl
 {
@@ -10,7 +12,9 @@ namespace CobraCrawl
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=snakegame.db");
+            var executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var dbPath = Path.Combine(executableLocation, "snakegame.db");
+            optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
     }
 

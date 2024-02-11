@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -250,6 +251,53 @@ namespace CobraCrawl
             }
         }
 
+        // Helper method for debugging
+        private void ExceptionHandler(DbUpdateException dbEx)
+        {
+            var builder = new StringBuilder("Wystąpił błąd podczas zapisu do bazy danych.\n");
+            try
+            {
+                builder.AppendLine(dbEx.InnerException.Message);
+            }
+            catch
+            {
+                builder.AppendLine("Nie można uzyskać szczegółów wewnętrznego wyjątku.");
+            }
+
+            MessageBox.Show(builder.ToString());
+        }
+
+        // Method which save the score to the database
+        private void SaveHighScore(string playerName, int score)
+        {
+            using (var db = new SnakeGameContext())
+            {
+                var highScore = new HighScore
+                {
+                    PlayerName = playerName,
+                    Score = score,
+                    Date = DateTime.Now
+                };
+
+                try
+                {
+                    db.HighScores.Add(highScore);
+                    db.SaveChanges();
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    // Wyjątek związany z aktualizacją bazy danych
+                    ExceptionHandler(dbEx);
+                }
+                catch (Exception ex)
+                {
+                    // Inne wyjątki
+                    MessageBox.Show($"Wystąpił błąd: {ex.Message}");
+                }
+
+            }
+        }
+
         // Game over overlay
         private async Task ShowGameOver()
         {
@@ -259,6 +307,17 @@ namespace CobraCrawl
             // And then make the overlay visible again
             Overlay.Visibility = Visibility.Visible;
             OverlayText.Text = "WCIŚNIJ DOWOLNY PRZYCISK BY ZACZĄĆ";
+
+            // Logic for getting user neame
+            string playerName = Microsoft.VisualBasic.Interaction.InputBox("Podaj swoje imię:", "Koniec gry", "Gracz", 100, 100);
+            if (!string.IsNullOrEmpty(playerName))
+            {
+                SaveHighScore(playerName, gameState.Score);
+            }
+
+            // Reset the game state to be able start form the beggining
+            gameState = new GameState(rows, cols);
+            gameRunning = false;
         }
     }
 }
