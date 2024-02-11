@@ -313,11 +313,31 @@ namespace CobraCrawl
             if (!string.IsNullOrEmpty(playerName))
             {
                 SaveHighScore(playerName, gameState.Score);
+                ShowHighScores();
             }
 
             // Reset the game state to be able start form the beggining
             gameState = new GameState(rows, cols);
             gameRunning = false;
+        }
+
+        // Method which takes bet scores from database and show them to user
+        // The mrthod is called when the user paste his name 
+        private void ShowHighScores()
+        {
+            using (var db = new SnakeGameContext())
+            {
+                var highScores = db.HighScores
+                    .OrderByDescending(h => h.Score)
+                    .Take(10) // SHow best 10 scores
+                    .ToList();
+
+                var highScoresText = new StringBuilder();
+                highScores.ForEach(hs =>
+                    highScoresText.AppendLine($"{hs.PlayerName} - {hs.Score}"));
+
+                MessageBox.Show(highScoresText.ToString(), "Najlepsze wyniki");
+            }
         }
     }
 }
